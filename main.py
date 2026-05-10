@@ -14,14 +14,14 @@ app.add_middleware(
 )
 
 #os.environ para despliegue. Descomente cuando ya probó todo local.
-#client = MongoClient(os.environ["MONGO_URI"])
+client = MongoClient(os.environ["MONGO_URI"])
 # TODO: conectarse al cluster Admonsis  
 # client = MongoClient("mongodb://<usuario>:<contraseña>@157.253.236.88:8087")
 
-client = MongoClient("")
+
 # TODO: conectarse a la base de datos Admonsis  
 # db = client["ISIS*******"]
-db = client[""]
+db = client["ISIS2304D27202610"]
 
 
 @app.get("/")
@@ -30,7 +30,7 @@ def inicio():
 
 @app.get('/bares/{bar_id}/comentarios')
 def get_comentarios(bar_id: int):
-    comentarios = None  # TODO: completar
+    comentarios = db["proveedores"]
     return comentarios
 
 @app.post('/bares/{bar_id}/comentarios')
