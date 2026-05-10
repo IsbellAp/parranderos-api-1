@@ -16,7 +16,7 @@ app.add_middleware(
 #os.environ para despliegue. Descomente cuando ya probó todo local.
 client = MongoClient(os.environ["MONGO_URI"])
 # TODO: conectarse al cluster Admonsis  
-# client = MongoClient("mongodb://<usuario>:<contraseña>@157.253.236.88:8087")
+#client = MongoClient("mongodb://ISIS2304D27202610:PGfMXdt1XNyg@157.253.236.88:8087")
 
 
 # TODO: conectarse a la base de datos Admonsis  
@@ -30,10 +30,7 @@ def root():
 
 @app.get('/bares/{bar_id}/comentarios')
 def get_comentarios(bar_id: int):
-    comentarios = list(db["proveedores"].find({"_id": bar_id}))
-
-    for c in comentarios:
-        c["_id"] = str(c["_id"])
+    comentarios = db["Bares"].find({"_id":bar_id})
 
     return comentarios
 
