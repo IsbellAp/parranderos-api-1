@@ -25,7 +25,7 @@ db = client["ISIS2304D27202610"]
 
 
 @app.get("/")
-def inicio():
+def root():
     return {"estado": "API funcionando correctamente"}
 
 @app.get('/bares/{bar_id}/comentarios')
