@@ -32,7 +32,7 @@ def root():
 def get_comentarios(bar_id: int):
 
     comentarios = list(
-        db["comentarios"].find({"_id": bar_id})
+        db["comentarios"].find({"bar_id": bar_id})
     )
 
     for c in comentarios:
