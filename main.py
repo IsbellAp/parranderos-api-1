@@ -30,7 +30,11 @@ def root():
 
 @app.get('/bares/{bar_id}/comentarios')
 def get_comentarios(bar_id: int):
-    comentarios = db["proveedores"].find({id:bar_id})
+    comentarios = list(db["proveedores"].find({"_id": bar_id}))
+
+    for c in comentarios:
+        c["_id"] = str(c["_id"])
+
     return comentarios
 
 @app.post('/bares/{bar_id}/comentarios')
