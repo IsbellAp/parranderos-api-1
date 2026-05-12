@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pymongo import MongoClient
+from fastapi import Body
 from datetime import datetime
 import os
 
@@ -14,9 +15,9 @@ app.add_middleware(
 )
 
 #os.environ para despliegue. Descomente cuando ya probó todo local.
-client = MongoClient(os.environ["MONGO_URI"])
+client = MongoClient('mongodb://ISIS2304D27202610:PGfMXdt1XNyg@157.253.236.88:8087/')
 # TODO: conectarse al cluster Admonsis  
-#client = MongoClient("mongodb://ISIS2304D27202610:PGfMXdt1XNyg@157.253.236.88:8087")
+
 
 
 # TODO: conectarse a la base de datos Admonsis  
@@ -44,11 +45,26 @@ def get_comentarios(bar_id: int):
 def post_comentario(bar_id: int, datos: dict):
     datos['bar_id'] = bar_id
     datos['fecha']  = datetime.now().isoformat()
-    # TODO: completar
+    db["comentarios"].insert_one(datos)
     return {'mensaje': 'Comentario guardado'}
 
-# TODO: implementar GET /bares/{bar_id}/eventos
-# Debe retornar todos los eventos del bar desde la colección 'eventos'
+@app.get('/bares/{bar_id}/eventos')
+def get_eventos(bar_id:int):
+    eventos=list(db["eventos"].find({"bar_id":bar_id}))
+    
+    for e in eventos:
+        e["bar_id"]=str(e["bar_id"])
+    return eventos
+
+@app.post('/bares/{bar_id}/eventos')
+def post_evento(bar_id: str, datos: dict = Body(...)):
+    datos['bar_id'] = bar_id
+    datos['fecha'] = datetime.now()      
+    datos['eventos'] = datos.get('eventos', [])  
+    
+    resultado = db['eventos'].insert_one(datos)
+    
+    return {"mensaje": "Evento creado", "id": str(resultado.inserted_id)}
 
 # TODO: implementar POST /bares/{bar_id}/eventos  
 # Debe insertar el evento en la colección 'eventos'
