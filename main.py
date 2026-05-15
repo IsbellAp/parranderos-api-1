@@ -49,22 +49,15 @@ def post_comentario(bar_id: int, datos: dict):
     return {'mensaje': 'Comentario guardado'}
 
 @app.get('/bares/{bar_id}/eventos')
-def get_eventos(bar_id:int):
-    eventos=list(db["eventos"].find({"bar_id":bar_id}))
-    
+def get_eventos(bar_id: int):
+    eventos = list(db["eventos"].find({"bar_id": bar_id}))
     for e in eventos:
-        e["bar_id"]=str(e["bar_id"])
+        e["_id"] = str(e["_id"]) 
     return eventos
 
 @app.post('/bares/{bar_id}/eventos')
-def post_evento(bar_id: str, datos: dict = Body(...)):
-    datos['bar_id'] = bar_id          # guarda como string, igual que el GET
-    datos['fecha_creacion'] = datetime.now()
-    
+def post_evento(bar_id: int, datos: dict = Body(...)):
+    datos['bar_id'] = bar_id
+    datos['fecha_creacion'] = datetime.now().isoformat()
     resultado = db['eventos'].insert_one(datos)
-    
     return {"mensaje": "Evento creado", "id": str(resultado.inserted_id)}
-
-# TODO: implementar POST /bares/{bar_id}/eventos  
-# Debe insertar el evento en la colección 'eventos'
-# Recuerde agregar bar_id y fecha_creacion al documento antes de insertar
